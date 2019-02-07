@@ -1,0 +1,41 @@
+#!/bin/bash
+# Carlos Gonzalez 'xastherion' 2019
+# -------------------------------------------
+# Sync-direction clie2serv ja oder no
+# WARNING: das Script lösch nicht, beim loschen besser manuell von beide Quelle tun
+# wenn automatisch erwünsch ist, dann --delete in rsync command addieren.
+# WARNING: das Script überschreibt die Ziel Dateien, wenn mit gleiche Name vorhanden sind
+#########################################################################
+declare clie2serv="ja"                                                  # Sync Direction : client-->server / server-->client
+declare serv_home="/Volumes/home/SYNC_TEST"                             # Local mount punkt
+declare serv_addresse="smb://user@server/home"                          # Remote Adresse
+
+declare clie_desk="$HOME/Desktop/"
+declare clie_thun="$HOME/Library/Thunderbird/"                          #here are Profiles/"
+declare clie_fire="$HOME/Library/Application Support/Firefox/"          #Profiles/"
+
+# CLIENT --> SERVER (~/ --> /Volumes/home)
+function sync_clie_serv {
+rsync -avz                      "$clie_desk" "$serv_home/desktop"                       #sync Desktop
+rsync -avz --exclude=ImapMail   "$clie_thun" "$serv_home/thunderbird"                   #sync Thunderbird
+rsync -avz                      "$clie_fire" "$serv_home/firefox"                       #sync Firefox
+exit
+}
+
+# SERVER --> CLIENT (/Volumes/home --> ~/)
+function sync_serv_clie {
+rsync -avz                      "$serv_home/desktop/"    "$clie_desk"                   #sync Desktop
+rsync -avz --exclude=ImapMail   "$serv_home/thunderbird/" "$clie_thun"                  #sync Thunderbird
+rsync -avz                      "$serv_home/firefox/"    "$clie_fire"                   #sync Firefox
+exit
+}
+
+if [ ! -d /Volumes/home/ ]; then                                        # test if home is mounted
+        echo "Home ist nicht gefunden, vielleicht liegt am home-1?"
+        open $serv_addresse                                             # conect home if not
+        sleep 5                                                         # wait a small delay
+fi
+        case $clie2serv in
+                ja)     echo "SYNC : CLIENT --> SERVER" & sync_clie_serv ;;
+                *)      echo "SYNC : SERVER --> CLIENT" & sync_serv_clie ;;
+        esac
