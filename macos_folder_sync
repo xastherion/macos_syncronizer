@@ -6,10 +6,12 @@
 # wenn automatisch erwünsch ist, dann --delete in rsync command addieren.
 # WARNING: das Script überschreibt die Ziel Dateien, wenn mit gleiche Name vorhanden sind
 #########################################################################
+# Fill in the variables client2serv for direction and serv_home and serv_addresse as local and remote adresses from server
+# ----------------------------------------------------------------------
 declare clie2serv="ja"                                                  # Sync Direction : client-->server / server-->client
 declare serv_home="/Volumes/home/SYNC_TEST"                             # Local mount punkt
 declare serv_addresse="smb://user@server/home"                          # Remote Adresse
-
+# ----------------------------------------------------------------------
 declare clie_desk="$HOME/Desktop/"
 declare clie_thun="$HOME/Library/Thunderbird/"                          #here are Profiles/"
 declare clie_fire="$HOME/Library/Application Support/Firefox/"          #Profiles/"
